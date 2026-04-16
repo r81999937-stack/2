@@ -1,0 +1,102 @@
+<!-- ====== survey.html 问卷填写页面 ====== -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>大学生生活方式调查</title>
+<style>
+body { font-family: Arial; max-width: 600px; margin: auto; }
+.question { margin: 15px 0; }
+button { padding: 10px; }
+</style>
+</head>
+<body>
+
+<h2>大学生生活方式调查</h2>
+
+<div class="question">
+  1. 你的年级：<br>
+  <select id="q1">
+    <option>大一</option><option>大二</option><option>大三</option><option>大四</option>
+  </select>
+</div>
+
+<div class="question">
+  2. 你每天平均学习时间：<br>
+  <input id="q2" placeholder="小时">
+</div>
+
+<div class="question">
+  3. 是否经常熬夜：<br>
+  <select id="q3">
+    <option>是</option><option>否</option>
+  </select>
+</div>
+
+<div class="question">
+  4. 每周运动次数：<br>
+  <input id="q4" placeholder="次数">
+</div>
+
+<div class="question">
+  5. 每天使用手机时间：<br>
+  <input id="q5" placeholder="小时">
+</div>
+
+<div class="question">
+  6. 是否感到学习压力大：<br>
+  <select id="q6">
+    <option>是</option><option>否</option>
+  </select>
+</div>
+
+<div class="question">
+  7. 平时是否规律作息：<br>
+  <select id="q7">
+    <option>是</option><option>否</option>
+  </select>
+</div>
+
+<button onclick="submitData()">提交</button>
+
+<script>
+const API_URL = " `https://api.jsonbin.io/v3/b/YOUR_BIN_ID` ";
+const API_KEY = "YOUR_API_KEY";
+
+async function submitData() {
+  const data = {
+    grade: document.getElementById('q1').value,
+    studyHours: document.getElementById('q2').value,
+    late: document.getElementById('q3').value,
+    exercise: document.getElementById('q4').value,
+    phone: document.getElementById('q5').value,
+    stress: document.getElementById('q6').value,
+    routine: document.getElementById('q7').value
+  };
+
+  // 获取原数据
+  let oldData = [];
+  const res = await fetch(API_URL, {
+    headers: { "X-Master-Key": API_KEY }
+  });
+  const json = await res.json();
+  oldData = json.record || [];
+
+  oldData.push(data);
+
+  // 更新
+  await fetch(API_URL, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Master-Key": API_KEY
+    },
+    body: JSON.stringify(oldData)
+  });
+
+  alert("提交成功！");
+}
+</script>
+
+</body>
+</html>
